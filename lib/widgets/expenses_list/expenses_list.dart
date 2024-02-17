@@ -19,6 +19,13 @@ class ExpensesList extends StatelessWidget {
       itemCount: expenses.length,
       itemBuilder: (context, index) => Dismissible(
         key: Key(expenses[index].id),
+        background: Container(
+          margin: Theme.of(context).cardTheme.margin,
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.error.withOpacity(0.5),
+            borderRadius: BorderRadius.circular(25),
+          ),
+        ),
         onDismissed: (direction) => onRemoveExpense(expenses[index]),
         child: ExpenseItem(
           expense: expenses[index],

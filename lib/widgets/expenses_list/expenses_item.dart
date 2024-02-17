@@ -23,9 +23,11 @@ class _ExpenseItemState extends State<ExpenseItem> {
     final textTheme = Theme.of(context).textTheme;
     return Card(
       child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 20,
-          vertical: 16,
+        padding: EdgeInsets.fromLTRB(
+          20,
+          8,
+          20,
+          _displayDetails ? 16 : 8,
         ),
         child: Column(
           children: [
@@ -38,6 +40,7 @@ class _ExpenseItemState extends State<ExpenseItem> {
                   style: TextStyle(
                     fontSize: textTheme.titleMedium?.fontSize,
                     fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.onSecondaryContainer,
                   ),
                 ),
                 Row(

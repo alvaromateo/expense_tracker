@@ -26,3 +26,46 @@ class Expense {
     return dateFormatter.format(date);
   }
 }
+
+class ExpenseCategoryBucket with ExpensesBucket {
+  @override
+  final List<Expense> expenses;
+  final Category category;
+
+  const ExpenseCategoryBucket({
+    required this.category,
+    required this.expenses,
+  });
+
+  ExpenseCategoryBucket.forCategory(List<Expense> allExpenses, this.category)
+      : expenses = allExpenses
+            .where((expense) => expense.category == category)
+            .toList();
+}
+
+class ExpensePaidBucket with ExpensesBucket {
+  @override
+  final List<Expense> expenses;
+  final Person payee;
+
+  const ExpensePaidBucket({
+    required this.payee,
+    required this.expenses,
+  });
+
+  ExpensePaidBucket.forPayee(List<Expense> allExpenses, this.payee)
+      : expenses =
+            allExpenses.where((expense) => expense.paidBy == payee).toList();
+}
+
+mixin ExpensesBucket {
+  List<Expense> get expenses;
+
+  double get totalExpenses {
+    double sum = 0;
+    for (final expense in expenses) {
+      sum += expense.amount;
+    }
+    return sum;
+  }
+}
