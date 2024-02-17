@@ -109,123 +109,130 @@ class _NewExpenseState extends State<NewExpense> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        children: [
-          TextField(
-            controller: _titleController,
-            maxLength: 50,
-            decoration: const InputDecoration(
-              label: Text('Title'),
+    // get how much space some external elements occupy on our UI (keyboard)
+    final keyboardSpace = MediaQuery.of(context).viewInsets.bottom;
+    // make the content scrollable so that there are no issues when the keyboard
+    // appears if the content exceeds the screen size
+    return SingleChildScrollView(
+      child: Container(
+        margin: EdgeInsets.fromLTRB(0, 0, 0, keyboardSpace),
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            TextField(
+              controller: _titleController,
+              maxLength: 50,
+              decoration: const InputDecoration(
+                label: Text('Title'),
+              ),
             ),
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: _amountController,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                    suffixText: 'EUR',
-                    label: Text('Amount'),
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _amountController,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                      suffixText: 'EUR',
+                      label: Text('Amount'),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(
-                width: 16,
-              ),
-              Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(_selectedDate == null
-                        ? 'Select date'
-                        : dateFormatter.format(_selectedDate!)),
-                    IconButton(
-                      onPressed: _showDatePicker,
-                      icon: const Icon(Icons.calendar_month),
-                    ),
-                  ],
+                const SizedBox(
+                  width: 16,
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          Row(
-            children: [
-              DropdownButton(
-                value: _selectedCategory,
-                items: Category.values
-                    .map(
-                      (category) => DropdownMenuItem(
-                        value: category,
-                        child: Text(category.displayName),
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(_selectedDate == null
+                          ? 'Select date'
+                          : dateFormatter.format(_selectedDate!)),
+                      IconButton(
+                        onPressed: _showDatePicker,
+                        icon: const Icon(Icons.calendar_month),
                       ),
-                    )
-                    .toList(),
-                onChanged: (value) {
-                  if (value == null) {
-                    return;
-                  }
-                  setState(() {
-                    _selectedCategory = value;
-                  });
-                },
-              ),
-              const Spacer(),
-              DropdownButton(
-                value: _selectedPayer,
-                items: widget._availablePersons
-                    .map(
-                      (person) => DropdownMenuItem(
-                        value: person,
-                        child: Text('${person.firstName} ${person.lastName}'),
-                      ),
-                    )
-                    .toList(),
-                onChanged: (value) {
-                  if (value == null) {
-                    return;
-                  }
-                  setState(() {
-                    _selectedPayer = value;
-                  });
-                },
-              )
-            ],
-          ),
-          const SizedBox(
-            height: 40,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('Cancel'),
-              ),
-              const SizedBox(
-                width: 16,
-              ),
-              ElevatedButton(
-                onPressed: _submitExpenseData,
-                style: ButtonStyle(
-                  backgroundColor: CustomMaterialColor(
-                      Theme.of(context).colorScheme.primary),
-                  foregroundColor: CustomMaterialColor(
-                      Theme.of(context).colorScheme.onPrimary),
+                    ],
+                  ),
                 ),
-                child: const Text('Save expense'),
-              ),
-            ],
-          )
-        ],
+              ],
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Row(
+              children: [
+                DropdownButton(
+                  value: _selectedCategory,
+                  items: Category.values
+                      .map(
+                        (category) => DropdownMenuItem(
+                          value: category,
+                          child: Text(category.displayName),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (value) {
+                    if (value == null) {
+                      return;
+                    }
+                    setState(() {
+                      _selectedCategory = value;
+                    });
+                  },
+                ),
+                const Spacer(),
+                DropdownButton(
+                  value: _selectedPayer,
+                  items: widget._availablePersons
+                      .map(
+                        (person) => DropdownMenuItem(
+                          value: person,
+                          child: Text('${person.firstName} ${person.lastName}'),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (value) {
+                    if (value == null) {
+                      return;
+                    }
+                    setState(() {
+                      _selectedPayer = value;
+                    });
+                  },
+                )
+              ],
+            ),
+            const SizedBox(
+              height: 40,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Cancel'),
+                ),
+                const SizedBox(
+                  width: 16,
+                ),
+                ElevatedButton(
+                  onPressed: _submitExpenseData,
+                  style: ButtonStyle(
+                    backgroundColor: CustomMaterialColor(
+                        Theme.of(context).colorScheme.primary),
+                    foregroundColor: CustomMaterialColor(
+                        Theme.of(context).colorScheme.onPrimary),
+                  ),
+                  child: const Text('Save expense'),
+                ),
+              ],
+            )
+          ],
+        ),
       ),
     );
   }
