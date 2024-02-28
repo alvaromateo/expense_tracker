@@ -54,4 +54,3 @@ void main() {
 }
 
 // TODO: create first screen to be displayed only once to set up user profile
-

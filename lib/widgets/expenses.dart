@@ -1,8 +1,13 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+
+import 'package:expense_tracker/color.dart';
 
 import 'package:expense_tracker/models/expense.dart';
 import 'package:expense_tracker/models/category.dart';
 import 'package:expense_tracker/models/person.dart';
+import 'package:expense_tracker/models/expenses_account.dart';
 
 import 'package:expense_tracker/widgets/new_expense.dart';
 import 'package:expense_tracker/widgets/expenses_list/expenses_list.dart';
@@ -22,40 +27,87 @@ const Widget noExpenses = Center(
 
 class _ExpensesState extends State<Expenses> {
   final Person self = alvaro;
-  final List<Expense> _registeredExpenses = dummyExpenseData();
-  final List<Person> _registeredPersons = const [
-    fede,
-    alvaro,
-  ];
+  final ExpensesAccount expensesAccount = ExpensesAccount(
+    title: 'Test',
+    participants: [fede, alvaro],
+  );
+  // dummy variable to redraw widget
+  int forceRedraw = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    for (Expense expense in dummyExpenseData()) {
+      expensesAccount.addExpense(expense);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     Widget mainContent = noExpenses;
-    if (_registeredExpenses.isNotEmpty) {
+    if (expensesAccount.expenses.isNotEmpty) {
       mainContent = ExpensesList(
-        expenses: _registeredExpenses,
+        expenses: expensesAccount.expenses,
         onRemoveExpense: _removeExpense,
       );
     }
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Expense Tracker'),
-        actions: [
-          IconButton(
-            onPressed: _openNewExpense,
-            icon: const Icon(Icons.add),
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+            title: Text(expensesAccount.title),
+            actions: [
+              IconButton(
+                onPressed: _openUserProfile,
+                icon: const Icon(Icons.person),
+              ),
+              IconButton(
+                onPressed: () {},
+                icon: const Icon(Icons.change_circle),
+              ),
+            ],
+            bottom: const TabBar(
+              tabs: [
+                Tab(icon: Icon(Icons.home)),
+                Tab(icon: Icon(Icons.list)),
+              ],
+            )),
+        body: TabBarView(children: [
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 16.0),
+            child: Column(
+              children: [
+                Text('Chart'),
+              ],
+            ),
           ),
-        ],
-      ),
-      body: Column(
-        children: [
-          const Text('Chart'),
-          Expanded(
-            child: mainContent,
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16.0),
+            child: Column(
+              children: [
+                Expanded(
+                  child: mainContent,
+                ),
+              ],
+            ),
           ),
-        ],
+        ]),
+        floatingActionButton: IconButton(
+          iconSize: 32,
+          style: ButtonStyle(
+            backgroundColor: CustomMaterialColor(colorScheme.primary),
+            foregroundColor: CustomMaterialColor(colorScheme.onPrimary),
+          ),
+          onPressed: _openNewExpense,
+          icon: const Icon(Icons.add),
+        ),
       ),
     );
+  }
+
+  void _openUserProfile() {
+    // ...
   }
 
   void _openNewExpense() {
@@ -64,37 +116,40 @@ class _ExpensesState extends State<Expenses> {
       isScrollControlled: true,
       useSafeArea: true,
       constraints: const BoxConstraints(),
-      builder: (ctx) => NewExpense(_registeredPersons, _addNewExpense),
+      builder: (ctx) =>
+          NewExpense(expensesAccount.participants, _addNewExpense),
     );
   }
 
   void _addNewExpense(Expense expense) {
     setState(() {
-      _registeredExpenses.add(expense);
+      expensesAccount.addExpense(expense);
     });
   }
 
   void _removeExpense(Expense expense) {
-    final expenseIndex = _registeredExpenses.indexOf(expense);
-    setState(() {
-      _registeredExpenses.removeAt(expenseIndex);
-    });
-    // clear previous snackbar
-    ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text('Expense deleted'),
-        duration: const Duration(seconds: 5),
-        action: SnackBarAction(
-          label: 'Undo',
-          onPressed: () {
-            setState(() {
-              _registeredExpenses.insert(expenseIndex, expense);
-            });
-          },
+    final expenseIndex = expensesAccount.removeExpense(expense);
+    if (expenseIndex >= 0) {
+      setState(() {
+        forceRedraw++;
+      });
+      // clear previous snackbar
+      ScaffoldMessenger.of(context).clearSnackBars();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Expense deleted'),
+          duration: const Duration(seconds: 5),
+          action: SnackBarAction(
+            label: 'Undo',
+            onPressed: () {
+              setState(() {
+                expensesAccount.addExpense(expense, expenseIndex);
+              });
+            },
+          ),
         ),
-      ),
-    );
+      );
+    }
   }
 }
 

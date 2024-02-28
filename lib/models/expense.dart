@@ -1,10 +1,6 @@
-import 'package:uuid/uuid.dart';
-
-import 'package:expense_tracker/dates.dart';
+import 'package:expense_tracker/utils.dart';
 import 'package:expense_tracker/models/person.dart';
 import 'package:expense_tracker/models/category.dart';
-
-const uuid = Uuid();
 
 class Expense {
   final String id;
