@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:expense_tracker/widgets/expenses.dart';
+import 'package:expense_tracker/features/expenses/expenses.dart';
+import 'injection.dart';
 
 var kColorScheme = ColorScheme.fromSeed(
   seedColor: const Color.fromARGB(255, 97, 183, 217),
@@ -13,7 +14,11 @@ var kDarkColorScheme = ColorScheme.fromSeed(
 );
 
 void main() {
+  // initialization
   WidgetsFlutterBinding.ensureInitialized();
+  configureDependencies();
+
+  // run app
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]).then((_) => runApp(
@@ -52,5 +57,3 @@ void main() {
         ),
       ));
 }
-
-// TODO: create first screen to be displayed only once to set up user profile
