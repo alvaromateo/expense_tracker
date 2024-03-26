@@ -1,8 +1,6 @@
-import 'package:expense_tracker/data/models/person.dart';
+import 'package:expense_tracker/data/models/user.dart';
 
-abstract class PreferencesService {
-  const PreferencesService();
-
-  Future<Person> getProfile();
-  Future<bool> setProfile(Person user);
+abstract interface class PreferencesService {
+  Future<User?> getProfile();
+  Future<bool> setProfile(User user);
 }

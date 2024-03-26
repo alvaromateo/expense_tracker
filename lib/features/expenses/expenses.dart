@@ -4,7 +4,7 @@ import 'package:expense_tracker/color.dart';
 
 import 'package:expense_tracker/data/models/expense.dart';
 import 'package:expense_tracker/data/models/category.dart';
-import 'package:expense_tracker/data/models/person.dart';
+import 'package:expense_tracker/data/models/user.dart';
 import 'package:expense_tracker/data/models/expenses_account.dart';
 
 import 'package:expense_tracker/features/create_expense/new_expense.dart';
@@ -24,10 +24,9 @@ const Widget noExpenses = Center(
 );
 
 class _ExpensesState extends State<Expenses> {
-  final Person self = alvaro;
+  final User self = alvaro;
   final ExpensesAccount expensesAccount = ExpensesAccount(
     title: 'Test',
-    participants: [fede, alvaro],
   );
   // dummy variable to redraw widget
   int forceRedraw = 0;
@@ -35,6 +34,8 @@ class _ExpensesState extends State<Expenses> {
   @override
   void initState() {
     super.initState();
+    expensesAccount.addParticipant(fede);
+    expensesAccount.addParticipant(alvaro);
     for (Expense expense in dummyExpenseData()) {
       expensesAccount.addExpense(expense);
     }
@@ -46,7 +47,7 @@ class _ExpensesState extends State<Expenses> {
     Widget mainContent = noExpenses;
     if (expensesAccount.expenses.isNotEmpty) {
       mainContent = ExpensesList(
-        expenses: expensesAccount.expenses,
+        expenses: expensesAccount.expenses.toList(),
         onRemoveExpense: _removeExpense,
       );
     }
@@ -115,7 +116,7 @@ class _ExpensesState extends State<Expenses> {
       useSafeArea: true,
       constraints: const BoxConstraints(),
       builder: (ctx) =>
-          NewExpense(expensesAccount.participants, _addNewExpense),
+          NewExpense(expensesAccount.participants.toList(), _addNewExpense),
     );
   }
 
@@ -126,8 +127,8 @@ class _ExpensesState extends State<Expenses> {
   }
 
   void _removeExpense(Expense expense) {
-    final expenseIndex = expensesAccount.removeExpense(expense);
-    if (expenseIndex >= 0) {
+    final expenseRemoved = expensesAccount.removeExpense(expense);
+    if (!expenseRemoved) {
       setState(() {
         forceRedraw++;
       });
@@ -141,7 +142,7 @@ class _ExpensesState extends State<Expenses> {
             label: 'Undo',
             onPressed: () {
               setState(() {
-                expensesAccount.addExpense(expense, expenseIndex);
+                expensesAccount.addExpense(expense);
               });
             },
           ),
@@ -153,14 +154,14 @@ class _ExpensesState extends State<Expenses> {
 
 // Dummy data functions for testing
 
-const Person fede = Person(
+const User fede = User(
   firstName: 'Federica',
   lastName: 'Lazzeroni',
   email: 'lazzeronifederica@gmail.com',
   phoneNumber: '+393451783876',
 );
 
-const Person alvaro = Person(
+const User alvaro = User(
   firstName: 'Alvaro',
   lastName: 'Mateo',
   email: 'alvaromoateo9@gmail.com',
@@ -174,14 +175,14 @@ List<Expense> dummyExpenseData() {
       title: 'Flutter course',
       category: Category.work,
       date: DateTime.now(),
-      paidBy: fede,
+      payer: fede,
     ),
     Expense(
       amount: 15.99,
       title: 'Cinema',
       category: Category.leisure,
       date: DateTime.now(),
-      paidBy: alvaro,
+      payer: alvaro,
     ),
   ];
 }

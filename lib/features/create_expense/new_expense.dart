@@ -4,11 +4,11 @@ import 'package:expense_tracker/color.dart';
 import 'package:expense_tracker/utils.dart';
 
 import 'package:expense_tracker/data/models/category.dart';
-import 'package:expense_tracker/data/models/person.dart';
+import 'package:expense_tracker/data/models/user.dart';
 import 'package:expense_tracker/data/models/expense.dart';
 
 class NewExpense extends StatefulWidget {
-  final List<Person> _availablePersons;
+  final List<User> _availablePersons;
   final void Function(Expense) _submitExpense;
 
   const NewExpense(
@@ -29,7 +29,7 @@ class _NewExpenseState extends State<NewExpense> {
 
   DateTime? _selectedDate;
   Category _selectedCategory = Category.values[0];
-  late Person _selectedPayer;
+  late User _selectedPayer;
 
   @override
   void initState() {
@@ -80,15 +80,15 @@ class _NewExpenseState extends State<NewExpense> {
     }
     // proceed with submission
     final amount = double.tryParse(_amountController.text)!;
-    widget._submitExpense(
-      Expense(
-        title: _titleController.text,
-        amount: amount,
-        date: _selectedDate!,
-        category: _selectedCategory,
-        paidBy: _selectedPayer,
-      ),
+    final expense = Expense(
+      title: _titleController.text,
+      amount: amount,
+      date: _selectedDate!,
+      category: _selectedCategory,
+      payer: _selectedPayer,
     );
+    widget._submitExpense(expense);
+
     // close new expense
     Navigator.pop(context);
   }

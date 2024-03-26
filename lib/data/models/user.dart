@@ -1,16 +1,19 @@
 import 'package:equatable/equatable.dart';
+import 'package:isar/isar.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'person.g.dart';
+part '../generated/user.g.dart';
 
 @JsonSerializable()
-class Person extends Equatable {
+@Collection(inheritance: false)
+class User extends Equatable {
+  final Id id = Isar.autoIncrement;
   final String firstName;
   final String lastName;
   final String email;
   final String phoneNumber;
 
-  const Person({
+  const User({
     required this.firstName,
     required this.lastName,
     required this.email,
@@ -18,11 +21,12 @@ class Person extends Equatable {
   });
 
   /// Deserializes the given JSON map into a [Person].
-  factory Person.fromJson(Map<String, dynamic> json) => _$PersonFromJson(json);
+  factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 
   /// Converts this [Person] into a JSON map.
-  Map<String, dynamic> toJson() => _$PersonToJson(this);
+  Map<String, dynamic> toJson() => _$UserToJson(this);
 
   @override
-  List<Object> get props => [email, phoneNumber];
+  @ignore
+  List<Object> get props => [id, email, phoneNumber];
 }

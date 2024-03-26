@@ -33,7 +33,8 @@ class ExpenseItemDetails extends StatelessWidget {
           children: [
             const Icon(Icons.person),
             inlineSpace,
-            Text('${expense.paidBy.firstName} ${expense.paidBy.lastName}'),
+            Text(
+                '${expense.payer.value?.firstName} ${expense.payer.value?.lastName}'),
           ],
         )
       ],

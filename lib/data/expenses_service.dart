@@ -1,9 +1,7 @@
 import 'package:expense_tracker/data/models/expenses_account.dart';
 
-abstract class ExpensesService {
-  const ExpensesService();
-
+abstract interface class ExpensesService {
   Stream<List<ExpensesAccount>> getExpensesAccounts();
-  Future<ExpensesAccount> saveExpensesAccount(ExpensesAccount account);
-  Future<bool> deleteExpensesAccount(String id);
+  Future<int> saveExpensesAccount(ExpensesAccount account);
+  Future<bool> deleteExpensesAccount(int id);
 }

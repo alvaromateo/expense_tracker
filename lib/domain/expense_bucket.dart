@@ -1,6 +1,6 @@
 import 'package:expense_tracker/data/models/category.dart';
 import 'package:expense_tracker/data/models/expense.dart';
-import 'package:expense_tracker/data/models/person.dart';
+import 'package:expense_tracker/data/models/user.dart';
 
 class ExpenseCategoryBucket with ExpensesBucket {
   @override
@@ -30,7 +30,7 @@ class ExpenseCategoryBucket with ExpensesBucket {
 class ExpensePaidBucket with ExpensesBucket {
   @override
   final List<Expense> expenses;
-  final Person payee;
+  final User payee;
 
   const ExpensePaidBucket({
     required this.payee,
@@ -38,8 +38,9 @@ class ExpensePaidBucket with ExpensesBucket {
   });
 
   ExpensePaidBucket.forPayee(List<Expense> allExpenses, this.payee)
-      : expenses =
-            allExpenses.where((expense) => expense.paidBy == payee).toList();
+      : expenses = allExpenses
+            .where((expense) => expense.payer.value == payee)
+            .toList();
 
   @override
   bool operator ==(Object other) =>

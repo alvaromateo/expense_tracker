@@ -1,34 +1,45 @@
 import 'package:equatable/equatable.dart';
-import 'package:expense_tracker/utils.dart';
-import 'package:expense_tracker/data/models/person.dart';
-import 'package:expense_tracker/data/models/category.dart';
+import 'package:isar/isar.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'expense.g.dart';
+import 'package:expense_tracker/utils.dart';
+import 'package:expense_tracker/data/models/user.dart';
+import 'package:expense_tracker/data/models/category.dart';
+
+part '../generated/expense.g.dart';
 
 @JsonSerializable()
+@Collection(inheritance: false)
 class Expense extends Equatable {
-  final String id;
+  final Id id = Isar.autoIncrement;
   final String title;
   final double amount;
   final DateTime date;
+  final bool split;
+  @enumerated
   final Category category;
-  final Person paidBy;
+  @JsonKey(includeToJson: false, includeFromJson: false)
+  final IsarLink<User> payer = IsarLink<User>();
 
   Expense({
-    String? id,
     required this.title,
     required this.amount,
     required this.date,
     required this.category,
-    required this.paidBy,
-  }) : id = id ?? uuid.v4();
+    this.split = true,
+    User? payer,
+  }) {
+    if (payer != null) {
+      this.payer.value = payer;
+    }
+  }
 
   String get formattedDate {
     return dateFormatter.format(date);
   }
 
   @override
+  @ignore
   List<Object> get props => [id];
 
   /// Deserializes the given JSON map into a [Expense].

@@ -13,10 +13,10 @@ var kDarkColorScheme = ColorScheme.fromSeed(
   seedColor: const Color.fromARGB(255, 3, 57, 72),
 );
 
-void main() {
+void main() async {
   // initialization
   WidgetsFlutterBinding.ensureInitialized();
-  configureDependencies();
+  await configureDependencies();
 
   // run app
   SystemChrome.setPreferredOrientations([

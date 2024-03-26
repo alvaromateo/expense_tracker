@@ -1,7 +1,5 @@
-import 'package:expense_tracker/data/models/person.dart';
+import 'package:expense_tracker/data/models/user.dart';
 
-abstract class UsersService {
-  const UsersService();
-
-  Stream<List<Person>> getUsers();
+abstract interface class UsersService {
+  Stream<List<User>> getUsers();
 }

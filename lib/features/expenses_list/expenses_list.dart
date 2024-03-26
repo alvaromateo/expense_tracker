@@ -18,7 +18,7 @@ class ExpensesList extends StatelessWidget {
     return ListView.builder(
       itemCount: expenses.length,
       itemBuilder: (context, index) => Dismissible(
-        key: Key(expenses[index].id),
+        key: Key(expenses[index].id.toString()),
         background: Container(
           margin: Theme.of(context).cardTheme.margin,
           decoration: BoxDecoration(
@@ -29,7 +29,7 @@ class ExpensesList extends StatelessWidget {
         onDismissed: (direction) => onRemoveExpense(expenses[index]),
         child: ExpenseItem(
           expense: expenses[index],
-          key: Key(expenses[index].id),
+          key: Key(expenses[index].id.toString()),
         ),
       ),
     );
