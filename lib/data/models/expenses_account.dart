@@ -1,4 +1,3 @@
-import 'package:equatable/equatable.dart';
 import 'package:isar/isar.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -9,12 +8,12 @@ part '../generated/expenses_account.g.dart';
 
 @JsonSerializable()
 @Collection(inheritance: false)
-class ExpensesAccount extends Equatable {
+class ExpensesAccount {
   final Id id = Isar.autoIncrement;
-  final String title;
+  String title;
   @JsonKey(includeFromJson: false, includeToJson: false)
-  final IsarLinks<Expense> expenses = IsarLinks<Expense>();
-  final IsarLinks<User> participants = IsarLinks<User>();
+  IsarLinks<Expense> expenses = IsarLinks<Expense>();
+  IsarLinks<User> participants = IsarLinks<User>();
 
   ExpensesAccount({
     required this.title,
@@ -35,10 +34,6 @@ class ExpensesAccount extends Equatable {
   bool removeExpense(Expense expense) {
     return expenses.remove(expense);
   }
-
-  @override
-  @ignore
-  List<Object> get props => [id];
 
   /// Deserializes the given JSON map into a [Expense].
   factory ExpensesAccount.fromJson(Map<String, dynamic> json) =>

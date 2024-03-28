@@ -1,8 +1,12 @@
+import 'dart:async';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 
-import 'package:expense_tracker/features/expenses/expenses.dart';
 import 'injection.dart';
+import 'package:expense_tracker/routes/app_router.dart';
 
 var kColorScheme = ColorScheme.fromSeed(
   seedColor: const Color.fromARGB(255, 97, 183, 217),
@@ -15,15 +19,26 @@ var kDarkColorScheme = ColorScheme.fromSeed(
 
 void main() async {
   // initialization
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await configureDependencies();
 
+  // logging
+  FlutterError.onError = (details) {
+    log(details.exceptionAsString(), stackTrace: details.stack);
+  };
+
+  runZonedGuarded(() => _application(), _errorHandler);
+}
+
+void _application() {
+  final appRouter = AppRouter();
   // run app
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]).then((_) => runApp(
-        MaterialApp(
-          home: const Expenses(),
+        MaterialApp.router(
+          routerConfig: appRouter.config(),
           theme: ThemeData().copyWith(
             colorScheme: kColorScheme,
             appBarTheme: const AppBarTheme().copyWith(
@@ -57,3 +72,5 @@ void main() async {
         ),
       ));
 }
+
+void _errorHandler(error, stack) => log(error.toString(), stackTrace: stack);

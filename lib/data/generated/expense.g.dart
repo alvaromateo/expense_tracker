@@ -33,18 +33,13 @@ const ExpenseSchema = CollectionSchema(
       name: r'date',
       type: IsarType.dateTime,
     ),
-    r'formattedDate': PropertySchema(
-      id: 3,
-      name: r'formattedDate',
-      type: IsarType.string,
-    ),
     r'split': PropertySchema(
-      id: 4,
+      id: 3,
       name: r'split',
       type: IsarType.bool,
     ),
     r'title': PropertySchema(
-      id: 5,
+      id: 4,
       name: r'title',
       type: IsarType.string,
     )
@@ -76,7 +71,6 @@ int _expenseEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
-  bytesCount += 3 + object.formattedDate.length * 3;
   bytesCount += 3 + object.title.length * 3;
   return bytesCount;
 }
@@ -90,9 +84,8 @@ void _expenseSerialize(
   writer.writeDouble(offsets[0], object.amount);
   writer.writeByte(offsets[1], object.category.index);
   writer.writeDateTime(offsets[2], object.date);
-  writer.writeString(offsets[3], object.formattedDate);
-  writer.writeBool(offsets[4], object.split);
-  writer.writeString(offsets[5], object.title);
+  writer.writeBool(offsets[3], object.split);
+  writer.writeString(offsets[4], object.title);
 }
 
 Expense _expenseDeserialize(
@@ -106,8 +99,8 @@ Expense _expenseDeserialize(
     category: _ExpensecategoryValueEnumMap[reader.readByteOrNull(offsets[1])] ??
         Category.groceries,
     date: reader.readDateTime(offsets[2]),
-    split: reader.readBoolOrNull(offsets[4]) ?? true,
-    title: reader.readString(offsets[5]),
+    split: reader.readBoolOrNull(offsets[3]) ?? true,
+    title: reader.readString(offsets[4]),
   );
   return object;
 }
@@ -127,10 +120,8 @@ P _expenseDeserializeProp<P>(
     case 2:
       return (reader.readDateTime(offset)) as P;
     case 3:
-      return (reader.readString(offset)) as P;
-    case 4:
       return (reader.readBoolOrNull(offset) ?? true) as P;
-    case 5:
+    case 4:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -411,138 +402,6 @@ extension ExpenseQueryFilter
     });
   }
 
-  QueryBuilder<Expense, Expense, QAfterFilterCondition> formattedDateEqualTo(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'formattedDate',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Expense, Expense, QAfterFilterCondition>
-      formattedDateGreaterThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'formattedDate',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Expense, Expense, QAfterFilterCondition> formattedDateLessThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'formattedDate',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Expense, Expense, QAfterFilterCondition> formattedDateBetween(
-    String lower,
-    String upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'formattedDate',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Expense, Expense, QAfterFilterCondition> formattedDateStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'formattedDate',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Expense, Expense, QAfterFilterCondition> formattedDateEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'formattedDate',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Expense, Expense, QAfterFilterCondition> formattedDateContains(
-      String value,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'formattedDate',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Expense, Expense, QAfterFilterCondition> formattedDateMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'formattedDate',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Expense, Expense, QAfterFilterCondition> formattedDateIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'formattedDate',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<Expense, Expense, QAfterFilterCondition>
-      formattedDateIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'formattedDate',
-        value: '',
-      ));
-    });
-  }
-
   QueryBuilder<Expense, Expense, QAfterFilterCondition> idEqualTo(Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -792,18 +651,6 @@ extension ExpenseQuerySortBy on QueryBuilder<Expense, Expense, QSortBy> {
     });
   }
 
-  QueryBuilder<Expense, Expense, QAfterSortBy> sortByFormattedDate() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'formattedDate', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Expense, Expense, QAfterSortBy> sortByFormattedDateDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'formattedDate', Sort.desc);
-    });
-  }
-
   QueryBuilder<Expense, Expense, QAfterSortBy> sortBySplit() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'split', Sort.asc);
@@ -867,18 +714,6 @@ extension ExpenseQuerySortThenBy
     });
   }
 
-  QueryBuilder<Expense, Expense, QAfterSortBy> thenByFormattedDate() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'formattedDate', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Expense, Expense, QAfterSortBy> thenByFormattedDateDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'formattedDate', Sort.desc);
-    });
-  }
-
   QueryBuilder<Expense, Expense, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
@@ -936,14 +771,6 @@ extension ExpenseQueryWhereDistinct
     });
   }
 
-  QueryBuilder<Expense, Expense, QDistinct> distinctByFormattedDate(
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'formattedDate',
-          caseSensitive: caseSensitive);
-    });
-  }
-
   QueryBuilder<Expense, Expense, QDistinct> distinctBySplit() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'split');
@@ -981,12 +808,6 @@ extension ExpenseQueryProperty
   QueryBuilder<Expense, DateTime, QQueryOperations> dateProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'date');
-    });
-  }
-
-  QueryBuilder<Expense, String, QQueryOperations> formattedDateProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'formattedDate');
     });
   }
 

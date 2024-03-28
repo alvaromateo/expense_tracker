@@ -9,12 +9,14 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:expense_tracker/data/expenses_service.dart' as _i7;
-import 'package:expense_tracker/data/impl/data_register.dart' as _i11;
+import 'package:expense_tracker/data/impl/data_register.dart' as _i12;
 import 'package:expense_tracker/data/impl/local_expenses.dart' as _i8;
 import 'package:expense_tracker/data/impl/local_preferences.dart' as _i10;
 import 'package:expense_tracker/data/impl/local_users.dart' as _i6;
 import 'package:expense_tracker/data/preferences_service.dart' as _i9;
 import 'package:expense_tracker/data/users_service.dart' as _i5;
+import 'package:expense_tracker/domain/repositories/preferences_repository.dart'
+    as _i11;
 import 'package:get_it/get_it.dart' as _i1;
 import 'package:injectable/injectable.dart' as _i2;
 import 'package:isar/isar.dart' as _i3;
@@ -45,8 +47,10 @@ extension GetItInjectableX on _i1.GetIt {
               await getAsync<_i4.SharedPreferences>(),
               gh<_i3.Isar>(),
             ));
+    gh.factoryAsync<_i11.PreferencesRepository>(() async =>
+        _i11.PreferencesRepository(await getAsync<_i9.PreferencesService>()));
     return this;
   }
 }
 
-class _$DataRegister extends _i11.DataRegister {}
+class _$DataRegister extends _i12.DataRegister {}

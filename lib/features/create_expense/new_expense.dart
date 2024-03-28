@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:expense_tracker/color.dart';
-import 'package:expense_tracker/utils.dart';
+import 'package:expense_tracker/domain/utils.dart';
 
 import 'package:expense_tracker/data/models/category.dart';
 import 'package:expense_tracker/data/models/user.dart';

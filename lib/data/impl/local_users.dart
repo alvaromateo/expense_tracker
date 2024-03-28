@@ -14,4 +14,9 @@ class LocalStorageUsers implements UsersService {
     Query<User> allUsers = _isar.users.buildQuery();
     return allUsers.watch(fireImmediately: true);
   }
+
+  @override
+  Future<User?> getUser(int userId) {
+    return _isar.users.get(userId);
+  }
 }

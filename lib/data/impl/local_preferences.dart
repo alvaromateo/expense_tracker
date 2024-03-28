@@ -1,3 +1,4 @@
+import 'package:expense_tracker/data/models/expenses_account.dart';
 import 'package:expense_tracker/data/models/preferences.dart';
 import 'package:expense_tracker/data/models/user.dart';
 import 'package:expense_tracker/data/preferences_service.dart';
@@ -28,6 +29,19 @@ class LocalStoragePreferences implements PreferencesService {
     _initPreferences();
     preferences!.userProfileId = user.id;
     return _sharedPreferences.setInt(_kUserProfileIdProperty, user.id);
+  }
+
+  @override
+  Future<ExpensesAccount?> getCurrentAccount() {
+    _initPreferences();
+    return _isar.expensesAccounts.get(preferences!.currentAccountId);
+  }
+
+  @override
+  Future<bool> setCurrentAccount(ExpensesAccount account) {
+    _initPreferences();
+    preferences!.currentAccountId = account.id;
+    return _sharedPreferences.setInt(_kCurrentAccountIdProperty, account.id);
   }
 
   void _initPreferences() {
